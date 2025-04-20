@@ -1,0 +1,95 @@
+{
+  "cards": [
+    {
+      "id": "chase-sapphire-preferred",
+      "name": "Chase Sapphire Preferred",
+      "issuer": "Chase",
+      "annualFee": 95,
+      "signupBonus": "60,000 points after spending $4,000 in first 3 months",
+      "rewardsRate": "2x points on travel and dining, 1x points on all other purchases",
+      "benefits": [
+        "Primary rental car insurance",
+        "Trip cancellation/interruption insurance",
+        "Baggage delay insurance",
+        "No foreign transaction fees",
+        "Transfer points to airline and hotel partners"
+      ],
+      "image": "/images/cards/sapphire-preferred.png",
+      "rating": 4.8,
+      "applyUrl": "https://www.chase.com/personal/credit-cards/sapphire-preferred"
+    },
+    {
+      "id": "amex-platinum",
+      "name": "American Express Platinum",
+      "issuer": "American Express",
+      "annualFee": 695,
+      "signupBonus": "80,000 points after spending $8,000 in first 6 months",
+      "rewardsRate": "5x points on flights booked directly with airlines, 5x points on prepaid hotels booked through Amex Travel, 1x points on other purchases",
+      "benefits": [
+        "$200 annual airline fee credit",
+        "$200 annual Uber Cash",
+        "$240 digital entertainment credit",
+        "Access to Centurion Lounges",
+        "Global Entry/TSA PreCheck credit",
+        "No foreign transaction fees"
+      ],
+      "image": "/images/cards/amex-platinum.png",
+      "rating": 4.9,
+      "applyUrl": "https://www.americanexpress.com/us/credit-cards/card/platinum"
+    },
+    {
+      "id": "capital-one-venture",
+      "name": "Capital One Venture Rewards",
+      "issuer": "Capital One",
+      "annualFee": 95,
+      "signupBonus": "75,000 miles after spending $4,000 in first 3 months",
+      "rewardsRate": "2x miles on every purchase",
+      "benefits": [
+        "No foreign transaction fees",
+        "Global Entry/TSA PreCheck credit",
+        "Travel accident insurance",
+        "Extended warranty protection",
+        "Purchase protection"
+      ],
+      "image": "/images/cards/venture.png",
+      "rating": 4.7,
+      "applyUrl": "https://www.capitalone.com/credit-cards/venture/"
+    },
+    {
+      "id": "chase-freedom-flex",
+      "name": "Chase Freedom Flex",
+      "issuer": "Chase",
+      "annualFee": 0,
+      "signupBonus": "$200 after spending $500 in first 3 months",
+      "rewardsRate": "5% cash back on rotating categories, 3% on dining and drugstores, 1% on all other purchases",
+      "benefits": [
+        "No annual fee",
+        "Cell phone protection",
+        "Purchase protection",
+        "Extended warranty protection",
+        "No foreign transaction fees"
+      ],
+      "image": "/images/cards/freedom-flex.png",
+      "rating": 4.6,
+      "applyUrl": "https://www.chase.com/personal/credit-cards/freedom-flex"
+    },
+    {
+      "id": "citi-double-cash",
+      "name": "Citi Double Cash",
+      "issuer": "Citi",
+      "annualFee": 0,
+      "signupBonus": "No current signup bonus",
+      "rewardsRate": "2% cash back on all purchases (1% when you buy, 1% when you pay)",
+      "benefits": [
+        "No annual fee",
+        "Citi Entertainment access",
+        "Purchase protection",
+        "Extended warranty protection",
+        "No foreign transaction fees"
+      ],
+      "image": "/images/cards/citi-double-cash.png",
+      "rating": 4.5,
+      "applyUrl": "https://www.citi.com/credit-cards/citi-double-cash-card"
+    }
+  ]
+} 
