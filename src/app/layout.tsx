@@ -1,21 +1,26 @@
-import type { Metadata } from "next";
-import { GeistSans } from 'geist/font/sans';
-import { GeistMono } from 'geist/font/mono';
-import "./globals.css";
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
+import './globals.css';
+
+const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: "Credit Card Compare",
-  description: "Compare and find the best credit cards for your needs",
+  title: 'Credit Card Application',
+  description: 'A modern credit card application built with Next.js',
 };
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${GeistSans.variable} ${GeistMono.variable}`}>
-      <body className="font-sans antialiased">{children}</body>
+    <html lang="en" suppressHydrationWarning>
+      <body className={inter.className}>
+        <main className="min-h-screen bg-gray-50 dark:bg-gray-900">
+          {children}
+        </main>
+      </body>
     </html>
   );
 }
