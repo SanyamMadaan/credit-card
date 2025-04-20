@@ -11,7 +11,7 @@ export default function CardsPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [sortBy, setSortBy] = useState<string>('rating');
 
-  const categories = ['all', ...new Set(cards.map(card => card.category))];
+  const categories = ['all', ...Array.from(new Set(cards.map(card => card.category || '').filter(category => category !== '')))];
 
   const filteredCards = cards
     .filter(card => {
