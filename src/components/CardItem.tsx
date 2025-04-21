@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
 import { StarIcon, ArrowRightIcon, CreditCardIcon } from '@heroicons/react/24/solid';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface CardItemProps {
   id: string;
@@ -37,6 +37,12 @@ export default function CardItem({
 }: CardItemProps) {
   const [imageError, setImageError] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const [imageSrc, setImageSrc] = useState(image);
+
+  useEffect(() => {
+    // Try to load image with a timestamp to prevent caching issues
+    setImageSrc(`${image}?t=${Date.now()}`);
+  }, [image]);
 
   const handleApplyClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -78,7 +84,7 @@ export default function CardItem({
               transition={{ duration: 0.3 }}
             >
               <Image
-                src={image}
+                src={imageSrc}
                 alt={name}
                 fill
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -86,6 +92,7 @@ export default function CardItem({
                 quality={90}
                 className="object-contain transition-transform duration-500"
                 onError={() => setImageError(true)}
+                loading="eager"
               />
             </motion.div>
           ) : (

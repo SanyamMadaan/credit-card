@@ -2,13 +2,8 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: '**',
-      },
-    ],
-    unoptimized: false,
+    unoptimized: true,
+    domains: ['localhost', 'credit-card-kashish-credit.vercel.app'],
   },
   transpilePackages: ['framer-motion'],
   compiler: {
