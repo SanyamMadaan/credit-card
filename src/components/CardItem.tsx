@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
-import { StarIcon, ArrowRightIcon, CreditCardIcon, BanknotesIcon } from '@heroicons/react/24/solid';
+import { StarIcon, ArrowRightIcon, CreditCardIcon } from '@heroicons/react/24/solid';
 import { useState } from 'react';
 
 interface CardItemProps {
@@ -16,6 +16,8 @@ interface CardItemProps {
   rating: number;
   rewardsRate?: string;
   benefits?: string[];
+  category: string;
+  rewards?: string[];
 }
 
 export default function CardItem({
@@ -28,116 +30,166 @@ export default function CardItem({
   rating,
   rewardsRate,
   benefits = [],
+  category,
+  rewards = [],
 }: CardItemProps) {
   const [imageError, setImageError] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
 
+  const handleApplyClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    // Open in new tab
+    window.open(`/cards/${id}/apply`, '_blank');
+  };
+
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      whileHover={{ y: -5 }}
-      transition={{ duration: 0.3 }}
-      onHoverStart={() => setIsHovered(true)}
-      onHoverEnd={() => setIsHovered(false)}
-      className="relative bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-shadow duration-300"
-    >
-      {/* Card Header */}
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center space-x-2">
-          <StarIcon className="h-5 w-5 text-yellow-400" />
-          <span className="text-gray-700 dark:text-gray-300 font-medium">{rating.toFixed(1)}</span>
-        </div>
-        <span className="text-sm text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-3 py-1 rounded-full">
-          {issuer}
-        </span>
-      </div>
-      
-      {/* Card Image */}
-      <div className="relative h-48 mb-6">
-        {!imageError ? (
-          <Image
-            src={image}
-            alt={name}
-            fill
-            className="object-contain transition-transform duration-300"
-            style={{ transform: isHovered ? 'scale(1.05)' : 'scale(1)' }}
-            priority
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            onError={() => setImageError(true)}
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center bg-gray-100 dark:bg-gray-700 rounded-xl">
-            <CreditCardIcon className="w-12 h-12 text-gray-400" />
-          </div>
-        )}
-      </div>
-      
-      {/* Card Details */}
-      <div className="space-y-4">
-        <h3 className="text-xl font-semibold text-gray-900 dark:text-white">{name}</h3>
-        
-        <div className="grid grid-cols-2 gap-4">
-          <div className="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
-            <p className="text-sm text-gray-500 dark:text-gray-400">Annual Fee</p>
-            <p className="text-lg font-semibold text-gray-900 dark:text-white">${annualFee}</p>
-          </div>
-          <div className="bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
-            <p className="text-sm text-gray-500 dark:text-gray-400">Signup Bonus</p>
-            <p className="text-lg font-semibold text-gray-900 dark:text-white">{signupBonus}</p>
-          </div>
-        </div>
+    <Link href={`/cards/${id}`}>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        whileHover={{ y: -5, scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
+        transition={{ duration: 0.3 }}
+        onHoverStart={() => setIsHovered(true)}
+        onHoverEnd={() => setIsHovered(false)}
+        className="group h-[500px] card p-6 flex flex-col cursor-pointer"
+      >
+        {/* Hover gradient effect */}
+        <motion.div 
+          className="hover-gradient rounded-3xl"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: isHovered ? 1 : 0 }}
+          transition={{ duration: 0.3 }}
+        />
 
-        {rewardsRate && (
-          <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-300">
-            <BanknotesIcon className="w-5 h-5" />
-            <span>{rewardsRate} rewards rate</span>
-          </div>
-        )}
+        {/* Card image */}
+        <motion.div 
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.5 }}
+          className="relative h-48 mb-6"
+        >
+          {!imageError ? (
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              transition={{ duration: 0.3 }}
+            >
+              <Image
+                src={image}
+                alt={name}
+                fill
+                className="object-contain transition-transform duration-500"
+                onError={() => setImageError(true)}
+              />
+            </motion.div>
+          ) : (
+            <motion.div 
+              whileHover={{ scale: 1.05 }}
+              className="w-full h-full flex items-center justify-center bg-secondary/50 rounded-xl"
+            >
+              <CreditCardIcon className="w-12 h-12 text-muted-foreground" />
+            </motion.div>
+          )}
+        </motion.div>
 
-        {benefits.length > 0 && (
-          <div className="space-y-2">
-            <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Key Benefits:</p>
-            <ul className="space-y-1">
-              {benefits.slice(0, 3).map((benefit, index) => (
-                <li key={index} className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
-                  <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />
-                  <span>{benefit}</span>
-                </li>
+        {/* Card details */}
+        <div className="flex-1 flex flex-col">
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="mb-4"
+          >
+            <h3 className="text-xl font-bold text-gradient mb-1">{name}</h3>
+            <p className="text-sm text-muted-foreground">{issuer}</p>
+          </motion.div>
+
+          {/* Rating and category */}
+          <motion.div
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.3 }}
+            className="flex items-center justify-between mb-4"
+          >
+            <div className="flex items-center space-x-1">
+              <StarIcon className="h-5 w-5 text-yellow-500" />
+              <span className="font-medium">{rating.toFixed(1)}</span>
+            </div>
+            <motion.span
+              whileHover={{ scale: 1.05 }}
+              className="px-3 py-1 rounded-full bg-white/5 text-xs font-medium"
+            >
+              {category}
+            </motion.span>
+          </motion.div>
+
+          {/* Annual fee */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 }}
+            className="mb-4"
+          >
+            <p className="text-sm text-muted-foreground">Annual Fee</p>
+            <p className="font-semibold">
+              {annualFee === 0 ? 'No Annual Fee' : `$${annualFee}`}
+            </p>
+          </motion.div>
+
+          {/* Rewards */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+            className="flex-1"
+          >
+            <p className="text-sm text-muted-foreground mb-2">Key Rewards</p>
+            <ul className="space-y-2">
+              {(rewards || []).slice(0, 2).map((reward, index) => (
+                <motion.li
+                  key={index}
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.6 + index * 0.1 }}
+                  className="text-sm flex items-start"
+                >
+                  <span className="mr-2">•</span>
+                  <span>{reward}</span>
+                </motion.li>
               ))}
             </ul>
-          </div>
-        )}
-      </div>
-      
-      {/* Action Buttons */}
-      <div className="mt-6 flex space-x-3">
-        <Link
-          href={`/cards/${id}`}
-          className="flex-1"
-        >
+          </motion.div>
+
+          {/* Apply button */}
           <motion.button
+            onClick={handleApplyClick}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            className="w-full bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white px-4 py-2 rounded-lg text-sm font-medium flex items-center justify-center space-x-2"
+            className="w-full btn-primary mt-4 group relative overflow-hidden"
           >
-            <span>View Details</span>
-            <ArrowRightIcon className="w-4 h-4" />
+            <motion.span
+              initial={{ opacity: 1 }}
+              whileHover={{ opacity: 0.8 }}
+              className="relative z-10 flex items-center justify-center gap-2"
+            >
+              Apply Now
+              <motion.span
+                whileHover={{ x: 5 }}
+                transition={{ type: "spring", stiffness: 200 }}
+              >
+                <ArrowRightIcon className="h-5 w-5" />
+              </motion.span>
+            </motion.span>
+            <motion.div
+              className="absolute inset-0 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 opacity-0 group-hover:opacity-20"
+              initial={false}
+              whileHover={{ scale: 1.1 }}
+              transition={{ duration: 0.3 }}
+            />
           </motion.button>
-        </Link>
-        <Link
-          href={`/compare?card=${id}`}
-          className="flex-1"
-        >
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium"
-          >
-            Compare
-          </motion.button>
-        </Link>
-      </div>
-    </motion.div>
+        </div>
+      </motion.div>
+    </Link>
   );
 } 

@@ -3,13 +3,14 @@ export interface Card {
   name: string;
   issuer: string;
   annualFee: number;
-  signupBonus: string;
+  signupBonus?: string;
   image: string;
   rating: number;
-  rewardsRate?: string;
-  benefits?: string[];
-  category?: string;
-  description?: string;
+  rewardsRate: string;
+  benefits: string[];
+  category: string;
+  description: string;
+  region: 'US' | 'IN';
 }
 
 export const cards: Card[] = [
@@ -19,89 +20,76 @@ export const cards: Card[] = [
     issuer: 'Chase',
     annualFee: 95,
     signupBonus: '60,000 points after spending $4,000 in 3 months',
-    image: '/images/chase-sapphire-preferred.png',
+    image: '/cardImages/chasesapphireimage.jpg',
     rating: 4.8,
-    rewardsRate: '2x points on travel and dining, 1x on all other purchases',
+    rewardsRate: '2x-5x points',
     benefits: [
-      'Primary rental car insurance',
-      'Trip cancellation/interruption insurance',
       'No foreign transaction fees',
-      'Transfer points to airline and hotel partners',
+      'Travel insurance',
+      'Purchase protection'
     ],
     category: 'Travel',
-    description: 'The Chase Sapphire Preferred® Card is a great choice for travelers who want to earn valuable rewards points on their everyday spending.',
+    description: 'Premium travel rewards card with flexible point redemption options.',
+    region: 'US'
   },
   {
     id: 'amex-platinum',
     name: 'American Express Platinum',
     issuer: 'American Express',
     annualFee: 695,
-    signupBonus: '80,000 points after spending $6,000 in 6 months',
-    image: '/images/amex-platinum.png',
+    signupBonus: '100,000 points after spending $6,000 in 6 months',
+    image: '/cardImages/americanexpress.jpg',
     rating: 4.7,
-    rewardsRate: '5x points on flights booked directly with airlines, 5x points on prepaid hotels booked through Amex Travel',
+    rewardsRate: '5x points on flights and hotels',
     benefits: [
-      '$200 annual airline fee credit',
-      '$200 annual Uber credit',
-      'Access to Centurion Lounges',
-      'Global Entry/TSA PreCheck credit',
-      'Marriott Gold and Hilton Gold status',
+      'Airport lounge access',
+      'Hotel status upgrades',
+      'Annual travel credits'
     ],
     category: 'Premium Travel',
-    description: 'The American Express Platinum Card® is a premium travel card that offers luxury benefits and high-end travel perks.',
+    description: 'Luxury travel card with premium benefits and exclusive perks.',
+    region: 'US'
   },
   {
-    id: 'capital-one-venture',
-    name: 'Capital One Venture',
-    issuer: 'Capital One',
-    annualFee: 95,
-    signupBonus: '75,000 miles after spending $4,000 in 3 months',
-    image: '/images/capital-one-venture.png',
+    id: 'amex-platinum-travel',
+    name: 'American Express Platinum Travel Credit Card',
+    issuer: 'American Express',
+    annualFee: 3500,
+    signupBonus: '50,000 reward points on spending ₹1,00,000 in 3 months',
+    image: '/cardImages/americanexpresstravel.jpg',
     rating: 4.6,
-    rewardsRate: '2x miles on every purchase',
+    rewardsRate: '3x points on travel',
     benefits: [
-      'Global Entry/TSA PreCheck credit',
-      'No foreign transaction fees',
-      'Travel accident insurance',
-      'Extended warranty protection',
+      'Complimentary airport lounge access',
+      'Travel insurance',
+      'Taj Hotels privileges'
     ],
     category: 'Travel',
-    description: 'The Capital One Venture Rewards Credit Card is a great option for those who want simple, flexible travel rewards.',
+    description: 'Premium travel credit card with exclusive benefits for Indian travelers.',
+    region: 'IN'
   },
   {
-    id: 'citi-double-cash',
-    name: 'Citi Double Cash',
-    issuer: 'Citi',
-    annualFee: 0,
-    signupBonus: 'N/A',
-    image: '/images/citi-double-cash.png',
+    id: 'sbi-prime',
+    name: 'SBI Card PRIME',
+    issuer: 'SBI',
+    annualFee: 2999,
+    signupBonus: '5,000 reward points on card activation',
+    image: '/cardImages/sbiprime.jpg',
     rating: 4.5,
-    rewardsRate: '2% cash back (1% when you buy, 1% when you pay)',
+    rewardsRate: '2x-10x reward points',
     benefits: [
-      'No annual fee',
-      'No foreign transaction fees',
-      'Extended warranty protection',
-      'Price rewind',
+      'Movie ticket discounts',
+      'Dining privileges',
+      'Fuel surcharge waiver'
     ],
-    category: 'Cash Back',
-    description: 'The Citi Double Cash Card is a simple, no-frills cash back card that rewards you for both spending and paying on time.',
-  },
-  {
-    id: 'discover-it',
-    name: 'Discover it',
-    issuer: 'Discover',
-    annualFee: 0,
-    signupBonus: 'Cashback Match™ (double all cash back earned in first year)',
-    image: '/images/discover-it.png',
-    rating: 4.4,
-    rewardsRate: '5% cash back in rotating categories, 1% on all other purchases',
-    benefits: [
-      'No annual fee',
-      'No foreign transaction fees',
-      'Free FICO® Credit Score',
-      'First year cashback match',
-    ],
-    category: 'Cash Back',
-    description: 'The Discover it® Cash Back card is a great option for those who want to maximize cash back in rotating categories.',
-  },
-]; 
+    category: 'Lifestyle',
+    description: 'Premium lifestyle credit card with dining and entertainment benefits.',
+    region: 'IN'
+  }
+];
+
+export const getCardsByRegion = (region: 'US' | 'IN') => {
+  return cards.filter(card => card.region === region);
+};
+
+export const getAllCards = () => cards; 
