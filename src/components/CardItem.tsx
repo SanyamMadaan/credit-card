@@ -81,6 +81,9 @@ export default function CardItem({
                 src={image}
                 alt={name}
                 fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                priority
+                quality={90}
                 className="object-contain transition-transform duration-500"
                 onError={() => setImageError(true)}
               />
