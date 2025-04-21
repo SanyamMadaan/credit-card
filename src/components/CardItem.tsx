@@ -14,10 +14,11 @@ interface CardItemProps {
   signupBonus: string;
   image: string;
   rating: number;
-  rewardsRate?: string;
-  benefits?: string[];
+  rewardsRate: string;
+  benefits: string[];
   category: string;
-  rewards?: string[];
+  description: string;
+  region: 'US' | 'IN';
 }
 
 export default function CardItem({
@@ -31,7 +32,8 @@ export default function CardItem({
   rewardsRate,
   benefits = [],
   category,
-  rewards = [],
+  description,
+  region,
 }: CardItemProps) {
   const [imageError, setImageError] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
@@ -144,9 +146,9 @@ export default function CardItem({
             transition={{ delay: 0.5 }}
             className="flex-1"
           >
-            <p className="text-sm text-muted-foreground mb-2">Key Rewards</p>
+            <p className="text-sm text-muted-foreground mb-2">Key Benefits</p>
             <ul className="space-y-2">
-              {(rewards || []).slice(0, 2).map((reward, index) => (
+              {benefits.slice(0, 2).map((benefit: string, index: number) => (
                 <motion.li
                   key={index}
                   initial={{ opacity: 0, x: -10 }}
@@ -155,7 +157,7 @@ export default function CardItem({
                   className="text-sm flex items-start"
                 >
                   <span className="mr-2">•</span>
-                  <span>{reward}</span>
+                  <span>{benefit}</span>
                 </motion.li>
               ))}
             </ul>

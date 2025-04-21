@@ -13,8 +13,11 @@ interface Card {
   signupBonus: string;
   image: string;
   rating: number;
-  rewardsRate?: string;
-  benefits?: string[];
+  rewardsRate: string;
+  benefits: string[];
+  category: string;
+  description: string;
+  region: 'US' | 'IN';
 }
 
 interface CardComparisonProps {
@@ -39,6 +42,18 @@ export default function CardComparison({ cards }: CardComparisonProps) {
     setIsComparing(!isComparing);
   };
 
+  const renderCard = (card: Card) => (
+    <CardItem 
+      {...card}
+      signupBonus={card.signupBonus || 'No signup bonus available'}
+      rewardsRate={card.rewardsRate || 'N/A'}
+      benefits={card.benefits || []}
+      category={card.category || 'Other'}
+      description={card.description || `${card.name} credit card by ${card.issuer}`}
+      region={card.region || 'US'}
+    />
+  );
+
   return (
     <div className="space-y-8">
       {/* Selected Cards Section */}
@@ -56,7 +71,7 @@ export default function CardComparison({ cards }: CardComparisonProps) {
             >
               <XMarkIcon className="w-4 h-4" />
             </button>
-            <CardItem {...card} />
+            {renderCard(card)}
           </motion.div>
         ))}
         
@@ -170,7 +185,7 @@ export default function CardComparison({ cards }: CardComparisonProps) {
                 >
                   <PlusIcon className="w-4 h-4" />
                 </button>
-                <CardItem {...card} />
+                {renderCard(card)}
               </motion.div>
             ))}
         </motion.div>

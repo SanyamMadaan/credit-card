@@ -214,7 +214,10 @@ export default function CardsPage() {
                   damping: 10,
                 }}
               >
-                <CardItem {...card} />
+                <CardItem 
+                  {...card} 
+                  signupBonus={card.signupBonus || 'No signup bonus available'}
+                />
               </motion.div>
             ))}
           </AnimatePresence>

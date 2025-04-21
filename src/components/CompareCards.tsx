@@ -18,14 +18,26 @@ export default function CompareCards({ cardIds }: CompareCardsProps) {
     );
   }
 
+  const renderCard = (card: typeof cards[0]) => (
+    <CardItem 
+      {...card}
+      signupBonus={card.signupBonus || 'No signup bonus available'}
+      rewardsRate={card.rewardsRate || 'N/A'}
+      benefits={card.benefits || []}
+      category={card.category || 'Other'}
+      description={card.description || `${card.name} credit card by ${card.issuer}`}
+      region={card.region || 'US'}
+    />
+  );
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {selectedCards.map(card => (
         <div key={card.id} className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6">
-          <CardItem {...card} />
+          {renderCard(card)}
           <div className="mt-4 space-y-2">
             <ComparisonDetail label="Annual Fee" value={`$${card.annualFee}`} />
-            <ComparisonDetail label="Signup Bonus" value={card.signupBonus} />
+            <ComparisonDetail label="Signup Bonus" value={card.signupBonus || 'No signup bonus'} />
             <ComparisonDetail label="Rating" value={card.rating.toFixed(1)} />
             {card.rewardsRate && (
               <ComparisonDetail label="Rewards Rate" value={card.rewardsRate} />
