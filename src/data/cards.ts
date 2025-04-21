@@ -1,3 +1,5 @@
+import { getCloudinaryUrl } from '@/utils/cloudinary';
+
 export interface Card {
   id: string;
   name: string;
@@ -20,7 +22,7 @@ export const cards: Card[] = [
     issuer: 'Chase',
     annualFee: 95,
     signupBonus: '60,000 points after spending $4,000 in 3 months',
-    image: '/cardImages/chasesapphireimage.jpg',
+    image: 'https://res.cloudinary.com/dv3vxqkwd/image/upload/v1745218737/creditcard/eoqynvsjndijg7yiknjy.jpg',
     rating: 4.8,
     rewardsRate: '2x-5x points',
     benefits: [
@@ -38,7 +40,7 @@ export const cards: Card[] = [
     issuer: 'American Express',
     annualFee: 695,
     signupBonus: '100,000 points after spending $6,000 in 6 months',
-    image: '/cardImages/americanexpress.jpg',
+    image: 'https://res.cloudinary.com/dv3vxqkwd/image/upload/v1745218626/creditcard/kuiqfqrhe8loejphafm8.jpg',
     rating: 4.7,
     rewardsRate: '5x points on flights and hotels',
     benefits: [
@@ -56,7 +58,7 @@ export const cards: Card[] = [
     issuer: 'American Express',
     annualFee: 3500,
     signupBonus: '50,000 reward points on spending ₹1,00,000 in 3 months',
-    image: '/cardImages/americanexpresstravel.jpg',
+    image: 'https://res.cloudinary.com/dv3vxqkwd/image/upload/v1745218690/creditcard/ayc2kxbaohkx4b7xvm4q.jpg',
     rating: 4.6,
     rewardsRate: '3x points on travel',
     benefits: [
@@ -74,7 +76,7 @@ export const cards: Card[] = [
     issuer: 'SBI',
     annualFee: 2999,
     signupBonus: '5,000 reward points on card activation',
-    image: '/cardImages/sbiprime.jpg',
+    image: 'https://res.cloudinary.com/dv3vxqkwd/image/upload/v1745218827/creditcard/cp5lqjvugxajlukjaivq.jpg',
     rating: 4.5,
     rewardsRate: '2x-10x reward points',
     benefits: [
