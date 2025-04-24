@@ -4,38 +4,23 @@ import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { StarIcon, XMarkIcon, PlusIcon } from '@heroicons/react/24/solid';
 import CardItem from './CardItem';
-
-interface Card {
-  id: string;
-  name: string;
-  issuer: string;
-  annualFee: number;
-  signupBonus: string;
-  image: string;
-  rating: number;
-  rewardsRate: string;
-  benefits: string[];
-  category: string;
-  description: string;
-  region: 'US' | 'IN';
-}
+import { useComparison } from '@/context/ComparisonContext';
+import { Card } from '@/data/cards';
 
 interface CardComparisonProps {
   cards: Card[];
 }
 
 export default function CardComparison({ cards }: CardComparisonProps) {
-  const [selectedCards, setSelectedCards] = useState<Card[]>([]);
+  const { selectedCards, addToComparison, removeFromComparison } = useComparison();
   const [isComparing, setIsComparing] = useState(false);
 
   const handleAddCard = (card: Card) => {
-    if (selectedCards.length < 3 && !selectedCards.find(c => c.id === card.id)) {
-      setSelectedCards([...selectedCards, card]);
-    }
+    addToComparison(card);
   };
 
   const handleRemoveCard = (cardId: string) => {
-    setSelectedCards(selectedCards.filter(card => card.id !== cardId));
+    removeFromComparison(cardId);
   };
 
   const toggleComparison = () => {
@@ -50,7 +35,7 @@ export default function CardComparison({ cards }: CardComparisonProps) {
       benefits={card.benefits || []}
       category={card.category || 'Other'}
       description={card.description || `${card.name} credit card by ${card.issuer}`}
-      region={card.region || 'US'}
+      region={card.region}
     />
   );
 
@@ -67,7 +52,7 @@ export default function CardComparison({ cards }: CardComparisonProps) {
           >
             <button
               onClick={() => handleRemoveCard(card.id)}
-              className="absolute top-2 right-2 p-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
+              className="absolute top-2 right-2 p-2 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors z-10"
             >
               <XMarkIcon className="w-4 h-4" />
             </button>
@@ -123,28 +108,26 @@ export default function CardComparison({ cards }: CardComparisonProps) {
                   <td className="px-6 py-4 text-sm text-gray-900 dark:text-white">Annual Fee</td>
                   {selectedCards.map((card) => (
                     <td key={card.id} className="px-6 py-4 text-sm text-gray-900 dark:text-white">
-                      ${card.annualFee}
+                      ₹{card.annualFee.toLocaleString()}
                     </td>
                   ))}
                 </tr>
                 <tr>
-                  <td className="px-6 py-4 text-sm text-gray-900 dark:text-white">Signup Bonus</td>
+                  <td className="px-6 py-4 text-sm text-gray-900 dark:text-white">Welcome Bonus</td>
                   {selectedCards.map((card) => (
                     <td key={card.id} className="px-6 py-4 text-sm text-gray-900 dark:text-white">
                       {card.signupBonus}
                     </td>
                   ))}
                 </tr>
-                {selectedCards.some(card => card.rewardsRate) && (
-                  <tr>
-                    <td className="px-6 py-4 text-sm text-gray-900 dark:text-white">Rewards Rate</td>
-                    {selectedCards.map((card) => (
-                      <td key={card.id} className="px-6 py-4 text-sm text-gray-900 dark:text-white">
-                        {card.rewardsRate || 'N/A'}
-                      </td>
-                    ))}
-                  </tr>
-                )}
+                <tr>
+                  <td className="px-6 py-4 text-sm text-gray-900 dark:text-white">Rewards Rate</td>
+                  {selectedCards.map((card) => (
+                    <td key={card.id} className="px-6 py-4 text-sm text-gray-900 dark:text-white">
+                      {card.rewardsRate || 'N/A'}
+                    </td>
+                  ))}
+                </tr>
                 <tr>
                   <td className="px-6 py-4 text-sm text-gray-900 dark:text-white">Rating</td>
                   {selectedCards.map((card) => (
@@ -155,6 +138,18 @@ export default function CardComparison({ cards }: CardComparisonProps) {
                           {card.rating.toFixed(1)}
                         </span>
                       </div>
+                    </td>
+                  ))}
+                </tr>
+                <tr>
+                  <td className="px-6 py-4 text-sm text-gray-900 dark:text-white">Benefits</td>
+                  {selectedCards.map((card) => (
+                    <td key={card.id} className="px-6 py-4 text-sm text-gray-900 dark:text-white">
+                      <ul className="list-disc list-inside">
+                        {card.benefits?.map((benefit, index) => (
+                          <li key={index} className="mb-1">{benefit}</li>
+                        ))}
+                      </ul>
                     </td>
                   ))}
                 </tr>
@@ -181,7 +176,7 @@ export default function CardComparison({ cards }: CardComparisonProps) {
               >
                 <button
                   onClick={() => handleAddCard(card)}
-                  className="absolute top-2 right-2 p-2 bg-green-500 text-white rounded-full hover:bg-green-600 transition-colors"
+                  className="absolute top-2 right-2 p-2 bg-green-500 text-white rounded-full hover:bg-green-600 transition-colors z-10"
                 >
                   <PlusIcon className="w-4 h-4" />
                 </button>

@@ -1,25 +1,34 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import Image from 'next/image';
 import Link from 'next/link';
-import { StarIcon, ArrowRightIcon, CreditCardIcon } from '@heroicons/react/24/solid';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
+import { useComparison } from '@/context/ComparisonContext';
+import { PlusIcon, MinusIcon, StarIcon } from '@heroicons/react/24/solid';
+import { Card } from '@/data/cards';
+import { useCompare } from '@/hooks/useCompare';
+import CardImage from './CardImage';
 
-interface CardItemProps {
-  id: string;
-  name: string;
-  issuer: string;
-  annualFee: number;
-  signupBonus: string;
-  image: string;
-  rating: number;
-  rewardsRate: string;
-  benefits: string[];
-  category: string;
-  description: string;
-  region: 'US' | 'IN';
-}
+type CardItemProps = Pick<Card, 'id' | 'name' | 'issuer' | 'annualFee' | 'signupBonus' | 'image' | 'rating' | 'rewardsRate' | 'benefits' | 'category' | 'description' | 'region'>;
+
+const formatIndianCurrency = (amount: number) => {
+  return new Intl.NumberFormat('en-IN', {
+    style: 'currency',
+    currency: 'INR',
+    maximumFractionDigits: 0,
+  }).format(amount);
+};
+
+const formatCurrency = (amount: number, region: 'US' | 'IN') => {
+  if (region === 'IN') {
+    return formatIndianCurrency(amount);
+  }
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    maximumFractionDigits: 0,
+  }).format(amount);
+};
 
 export default function CardItem({
   id,
@@ -30,178 +39,186 @@ export default function CardItem({
   image,
   rating,
   rewardsRate,
-  benefits = [],
+  benefits,
   category,
   description,
   region,
 }: CardItemProps) {
-  const [imageError, setImageError] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
-  const [imageSrc, setImageSrc] = useState(image);
+  const { addToComparison, removeFromComparison, isCardSelected } = useComparison();
+  const selected = isCardSelected(id);
+  const { addToCompare, removeFromCompare, isInCompare, isFull } = useCompare();
 
-  useEffect(() => {
-    // Try to load image with a timestamp to prevent caching issues
-    setImageSrc(`${image}?t=${Date.now()}`);
-  }, [image]);
+  const handleCompareClick = () => {
+    const cardData = {
+      id,
+      name,
+      issuer,
+      annualFee,
+      signupBonus,
+      image,
+      rating,
+      rewardsRate,
+      benefits,
+      category,
+      description,
+      region,
+      features: {
+        rewardsProgram: [],
+        welcomeBonus: [],
+        airportLounge: [],
+        insurance: [],
+        lifestyle: [],
+        fees: {
+          annual: annualFee,
+          joiningFee: annualFee
+        }
+      },
+      eligibility: {
+        minIncome: 0,
+        minAge: 21,
+        maxAge: 100,
+        employmentType: ['Salaried', 'Self-Employed']
+      },
+      interestRates: {
+        purchase: 0,
+        cash: 0
+      }
+    };
 
-  const handleApplyClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    // Open in new tab
-    window.open(`/cards/${id}/apply`, '_blank');
+    if (selected) {
+      removeFromComparison(id);
+    } else {
+      addToComparison(cardData);
+    }
+
+    if (isInCompare(id)) {
+      removeFromCompare(id);
+    } else {
+      addToCompare(id);
+    }
   };
 
   return (
-    <Link href={`/cards/${id}`}>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      whileHover={{ y: -5 }}
+      onHoverStart={() => setIsHovered(true)}
+      onHoverEnd={() => setIsHovered(false)}
+      className="group relative bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-900 rounded-2xl shadow-lg overflow-hidden"
+      style={{
+        transformStyle: 'preserve-3d',
+        perspective: '1000px'
+      }}
+    >
+      {/* Background gradient animation */}
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        whileHover={{ y: -5, scale: 1.02 }}
-        whileTap={{ scale: 0.98 }}
-        transition={{ duration: 0.3 }}
-        onHoverStart={() => setIsHovered(true)}
-        onHoverEnd={() => setIsHovered(false)}
-        className="group h-[500px] card p-6 flex flex-col cursor-pointer"
-      >
-        {/* Hover gradient effect */}
-        <motion.div 
-          className="hover-gradient rounded-3xl"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: isHovered ? 1 : 0 }}
-          transition={{ duration: 0.3 }}
-        />
+        className="absolute inset-0 bg-gradient-to-r from-primary-500/20 via-purple-500/20 to-pink-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+        animate={{
+          backgroundPosition: isHovered ? ['0% 50%', '100% 50%'] : '0% 50%',
+        }}
+        transition={{
+          duration: 3,
+          repeat: Infinity,
+          repeatType: 'reverse',
+        }}
+      />
+
+      {/* Card content */}
+      <div className="relative p-6 h-full flex flex-col">
+        {/* Compare button */}
+        <motion.button
+          onClick={handleCompareClick}
+          className={`absolute top-4 right-4 z-10 p-2 rounded-full ${
+            selected
+              ? 'bg-primary-600 text-white'
+              : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300'
+          } hover:scale-110 transition-all duration-200`}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          {selected ? (
+            <MinusIcon className="h-5 w-5" />
+          ) : (
+            <PlusIcon className="h-5 w-5" />
+          )}
+        </motion.button>
 
         {/* Card image */}
-        <motion.div 
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.5 }}
-          className="relative h-48 mb-6"
+        <motion.div
+          className="relative h-56 mb-6 transform-gpu overflow-hidden rounded-xl bg-gradient-to-b from-gray-100 to-white dark:from-gray-700 dark:to-gray-800"
+          animate={{
+            rotateY: isHovered ? 10 : 0,
+            scale: isHovered ? 1.05 : 1,
+          }}
+          transition={{ type: 'spring', stiffness: 100 }}
         >
-          {!imageError ? (
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              transition={{ duration: 0.3 }}
-            >
-              <Image
-                src={imageSrc}
-                alt={name}
-                fill
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                priority
-                quality={90}
-                className="object-contain transition-transform duration-500"
-                onError={() => setImageError(true)}
-                loading="eager"
-              />
-            </motion.div>
-          ) : (
-            <motion.div 
-              whileHover={{ scale: 1.05 }}
-              className="w-full h-full flex items-center justify-center bg-secondary/50 rounded-xl"
-            >
-              <CreditCardIcon className="w-12 h-12 text-muted-foreground" />
-            </motion.div>
-          )}
+          <div className="absolute inset-0 bg-gradient-to-br from-primary-500/10 to-purple-500/10" />
+          <CardImage
+            src={image}
+            alt={`${name} credit card`}
+            className="p-4"
+          />
         </motion.div>
 
         {/* Card details */}
-        <div className="flex-1 flex flex-col">
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="mb-4"
-          >
-            <h3 className="text-xl font-bold text-gradient mb-1">{name}</h3>
-            <p className="text-sm text-muted-foreground">{issuer}</p>
-          </motion.div>
+        <div className="flex-1 space-y-4">
+          <div>
+            <h3 className="text-xl font-bold mb-1 bg-gradient-to-r from-primary-600 to-primary-400 bg-clip-text text-transparent">
+              {name}
+            </h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400">{issuer}</p>
+          </div>
 
-          {/* Rating and category */}
-          <motion.div
-            initial={{ opacity: 0, x: -10 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.3 }}
-            className="flex items-center justify-between mb-4"
-          >
-            <div className="flex items-center space-x-1">
-              <StarIcon className="h-5 w-5 text-yellow-500" />
-              <span className="font-medium">{rating.toFixed(1)}</span>
-            </div>
-            <motion.span
-              whileHover={{ scale: 1.05 }}
-              className="px-3 py-1 rounded-full bg-white/5 text-xs font-medium"
-            >
-              {category}
-            </motion.span>
-          </motion.div>
-
-          {/* Annual fee */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="mb-4"
-          >
-            <p className="text-sm text-muted-foreground">Annual Fee</p>
-            <p className="font-semibold">
-              {annualFee === 0 ? 'No Annual Fee' : `$${annualFee}`}
-            </p>
-          </motion.div>
-
-          {/* Rewards */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
-            className="flex-1"
-          >
-            <p className="text-sm text-muted-foreground mb-2">Key Benefits</p>
-            <ul className="space-y-2">
-              {benefits.slice(0, 2).map((benefit: string, index: number) => (
-                <motion.li
-                  key={index}
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.6 + index * 0.1 }}
-                  className="text-sm flex items-start"
-                >
-                  <span className="mr-2">•</span>
-                  <span>{benefit}</span>
-                </motion.li>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              {[...Array(5)].map((_, i) => (
+                <StarIcon
+                  key={i}
+                  className={`h-4 w-4 ${
+                    i < rating
+                      ? 'text-yellow-400'
+                      : 'text-gray-300'
+                  }`}
+                />
               ))}
-            </ul>
-          </motion.div>
+              <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">
+                {rating.toFixed(1)}
+              </span>
+            </div>
+            <span className="px-3 py-1 bg-gray-100 dark:bg-gray-700 rounded-full text-xs font-medium text-gray-600 dark:text-gray-300">
+              {category}
+            </span>
+          </div>
 
-          {/* Apply button */}
-          <motion.button
-            onClick={handleApplyClick}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            className="w-full btn-primary mt-4 group relative overflow-hidden"
-          >
-            <motion.span
-              initial={{ opacity: 1 }}
-              whileHover={{ opacity: 0.8 }}
-              className="relative z-10 flex items-center justify-center gap-2"
+          <div className="space-y-2">
+            <div>
+              <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Annual Fee</p>
+              <p className="text-lg font-bold text-gray-900 dark:text-white">
+                {annualFee === 0 ? 'No Annual Fee' : formatCurrency(annualFee, region)}
+              </p>
+            </div>
+
+            {signupBonus && (
+              <div>
+                <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Welcome Bonus</p>
+                <p className="text-gray-900 dark:text-white">{signupBonus}</p>
+              </div>
+            )}
+          </div>
+
+          <div className="pt-4">
+            <Link
+              href={`/cards/${id}`}
+              className="block w-full text-center bg-primary-600 hover:bg-primary-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200"
             >
-              Apply Now
-              <motion.span
-                whileHover={{ x: 5 }}
-                transition={{ type: "spring", stiffness: 200 }}
-              >
-                <ArrowRightIcon className="h-5 w-5" />
-              </motion.span>
-            </motion.span>
-            <motion.div
-              className="absolute inset-0 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 opacity-0 group-hover:opacity-20"
-              initial={false}
-              whileHover={{ scale: 1.1 }}
-              transition={{ duration: 0.3 }}
-            />
-          </motion.button>
+              View Details
+            </Link>
+          </div>
         </div>
-      </motion.div>
-    </Link>
+      </div>
+    </motion.div>
   );
 } 
