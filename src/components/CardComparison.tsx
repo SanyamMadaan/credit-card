@@ -36,6 +36,7 @@ export default function CardComparison({ cards }: CardComparisonProps) {
       category={card.category || 'Other'}
       description={card.description || `${card.name} credit card by ${card.issuer}`}
       region={card.region}
+      applyLink={card.applyLink}
     />
   );
 

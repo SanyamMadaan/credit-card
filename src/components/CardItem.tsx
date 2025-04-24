@@ -9,7 +9,7 @@ import { Card } from '@/data/cards';
 import { useCompare } from '@/hooks/useCompare';
 import CardImage from './CardImage';
 
-type CardItemProps = Pick<Card, 'id' | 'name' | 'issuer' | 'annualFee' | 'signupBonus' | 'image' | 'rating' | 'rewardsRate' | 'benefits' | 'category' | 'description' | 'region'>;
+type CardItemProps = Pick<Card, 'id' | 'name' | 'issuer' | 'annualFee' | 'signupBonus' | 'image' | 'rating' | 'rewardsRate' | 'benefits' | 'category' | 'description' | 'region' | 'applyLink'>;
 
 const formatIndianCurrency = (amount: number) => {
   return new Intl.NumberFormat('en-IN', {
@@ -43,6 +43,7 @@ export default function CardItem({
   category,
   description,
   region,
+  applyLink,
 }: CardItemProps) {
   const [isHovered, setIsHovered] = useState(false);
   const { addToComparison, removeFromComparison, isCardSelected } = useComparison();
@@ -63,6 +64,7 @@ export default function CardItem({
       category,
       description,
       region,
+      applyLink,
       features: {
         rewardsProgram: [],
         welcomeBonus: [],
